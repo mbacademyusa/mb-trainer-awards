@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>منصة جوائز MB - الترشيح والتصويت والفائزون</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* CSS أساسي للتنسيق */
+    body { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
+    nav { background-color: #004d40; padding: 12px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+    nav a { margin: 0 10px; color: #fff; font-weight: bold; text-decoration: none; cursor: pointer; }
+    nav a:hover { text-decoration: underline; }
+    section { display: none; padding: 20px; background: #fff; margin: 20px auto; max-width: 700px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    section.active { display: block; }
+    h2 { text-align: center; color: #00796b; }
+    .contest-name { text-align: center; font-size: 1.5em; font-weight: bold; color: #004d40; margin-bottom: 15px; }
+    input, select, textarea, button { width: 100%; max-width: 500px; margin: 10px auto; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; box-sizing: border-box; }
+    button { background: #00796b; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #004d40; }
+    .nominee { border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 15px; position: relative; transition: box-shadow 0.2s; }
+    .nominee:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .rank-number { position: absolute; top: -12px; left: -12px; background: #ff5722; color: #fff; border-radius: 50%; padding: 5px 10px; font-weight: bold; }
+    .top-voted-label { position: absolute; top: -10px; right: -10px; background: gold; color: #000; padding: 5px 8px; border-radius: 8px; font-size: 0.8em; }
+    .nominee-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .badge { background: #1976d2; color: #fff; padding: 5px 8px; border-radius: 4px; }
+    .vote-bar { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+    .vote-fill { background: #4caf50; height: 100%; transition: width 0.3s; }
+    /* ألوان حسب الأقسام */
+    .ai { background: #e8f5e9; }
+    .ai .badge { background: #2e7d32; }
+    .bigdata { background: #e3f2fd; }
+    .bigdata .badge { background: #1976d2; }
+    .design { background: #f3e5f5; }
+    .design .badge { background: #8e24aa; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="#nominate">📝 الترشيح</a>
+  <a href="#vote">🌟 التصويت</a>
+  <a href="#winners">🏆 الفائزون</a>
+</nav>
+<section id="nominate" class="active">
+  <div class="contest-name">مسابقة MB للمدربين 2025</div>
+  <h2>📝 الترشيح</h2>
+  <input type="text" id="full_name" placeholder="اسمك الكامل" />
+  <input type="email" id="email" placeholder="بريدك الإلكتروني" />
+  <select id="category">
+    <option value="">-- اختر القسم --</option>
+    <option value="AI">مدرب ذكاء اصطناعي</option>
+    <option value="Big Data">مدرب بيانات</option>
+    <option value="Design">مصمم</option>
+  </select>
+  <textarea id="bio" placeholder="نبذة مختصرة عنك"></textarea>
+  <button id="submitBtn">إرسال الترشيح</button>
+</section>
+<section id="vote">
+  <div class="contest-name">مسابقة MB للمدربين 2025</div>
+  <h2>🌟 التصويت</h2>
+  <div id="countdown">⏳ جاري حساب الوقت...</div>
+  <div id="nomineeCount" style="text-align:center; margin:10px 0; font-weight:bold;"></div>
+  <div id="nominees"></div>
+</section>
+<section id="winners">
+  <div class="contest-name">مسابقة MB للمدربين 2025</div>
+  <h2>🏆 الفائزون</h2>
+  <div id="winners_list" style="text-align:center; font-style:italic;">📋 جارٍ التحميل...</div>
+</section>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js';
+  import { getFirestore, collection, addDoc, doc, updateDoc, increment, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js';
+  const app = initializeApp({ apiKey:"AIzaSyBIwogbDa1IV7Wn7A73dLgvQFtx159CCh8", authDomain:"mb-academy-92f9f.firebaseapp.com", projectId:"mb-academy-92f9f" });
+  const db = getFirestore(app);
+  // countdown
+  const endTime = Date.now() + 7*24*60*60*1000;
+  const cdEl = document...
